@@ -12,7 +12,7 @@ export interface Producto {
 export class ProductosStore {
   private readonly http = inject(HttpClient);
   readonly productos = toSignal(
-    this.http.get<readonly Producto[]>('http://localhost/api/productos'),
+    this.http.get<readonly Producto[]>('http://localhost:8081/api/productos'),
     { initialValue: [] },
   );
 }
