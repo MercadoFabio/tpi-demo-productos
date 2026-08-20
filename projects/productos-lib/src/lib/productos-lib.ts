@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, Injectable, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 export interface Producto {
   readonly codigo: string;
@@ -6,15 +8,13 @@ export interface Producto {
   readonly stock: number;
 }
 
-const PRODUCTOS: readonly Producto[] = [
-  { codigo: 'NB-101', nombre: 'Notebook', stock: 12 },
-  { codigo: 'MN-202', nombre: 'Monitor', stock: 8 },
-  { codigo: 'TC-303', nombre: 'Teclado', stock: 25 },
-];
-
 @Injectable({ providedIn: 'root' })
 export class ProductosStore {
-  readonly productos = signal<readonly Producto[]>(PRODUCTOS);
+  private readonly http = inject(HttpClient);
+  readonly productos = toSignal(
+    this.http.get<readonly Producto[]>('http://localhost/api/productos'),
+    { initialValue: [] },
+  );
 }
 
 @Component({
